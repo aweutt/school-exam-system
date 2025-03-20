@@ -1,8 +1,28 @@
+<!-- teacher.html -->
 <!DOCTYPE html>
-<html>
-<head><title>Teacher Page</title></head>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>واجهة المعلم</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
 <body>
-<h2>Teacher Interface</h2>
-<!-- Teacher content -->
+  <h2>تسجيل دخول المعلم</h2>
+  <input type="text" id="teacherName" placeholder="اسم المعلم أو الرقم الوظيفي" />
+  <button onclick="loginTeacher()">دخول</button>
+
+  <div id="teacherPanel" style="display:none;">
+    <h3>لوحة التحكم</h3>
+    <h4>إضافة اختبار جديد</h4>
+    <input type="text" id="examName" placeholder="اسم الاختبار" />
+    <input type="text" id="examCode" placeholder="كود الاختبار" />
+    <input type="number" id="examDuration" placeholder="مدة الاختبار بالدقائق" />
+    <button onclick="addExam()">إضافة</button>
+
+    <h4>الاختبارات</h4>
+    <ul id="examList"></ul>
+  </div>
+
+  <script src="teacher.js"></script>
 </body>
 </html>
