@@ -1,8 +1,36 @@
 <!DOCTYPE html>
-<html>
-<head><title>Student Page</title></head>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>واجهة الطالب</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 <body>
-<h2>Student Interface</h2>
-<!-- Student content -->
+  <div class="container">
+    <h1>نظام الاختبارات العملية - الطالب</h1>
+
+    <!-- تسجيل الدخول -->
+    <div id="login-section">
+      <input type="text" id="student-name" placeholder="اسم الطالب">
+      <input type="text" id="student-id" placeholder="رقم الطالب">
+      <button onclick="login()">دخول</button>
+    </div>
+
+    <!-- إدخال كود الاختبار -->
+    <div id="code-section" style="display:none;">
+      <input type="text" id="exam-code" placeholder="أدخل كود الاختبار">
+      <button onclick="startExam()">بدء الاختبار</button>
+    </div>
+
+    <!-- عرض السؤال والعد التنازلي -->
+    <div id="exam-section" style="display:none;">
+      <h3 id="question">السؤال: اكتب مثال على جملة طباعة بلغة Python.</h3>
+      <textarea id="answer" rows="5" placeholder="اكتب إجابتك هنا..."></textarea>
+      <div id="timer">الوقت المتبقي: <span id="countdown">--:--</span></div>
+      <button onclick="submitAnswer()">إرسال</button>
+    </div>
+  </div>
+
+  <script src="student.js"></script>
 </body>
 </html>
