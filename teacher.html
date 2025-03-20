@@ -1,28 +1,24 @@
-<!-- teacher.html -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>واجهة المعلم</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h2>تسجيل دخول المعلم</h2>
-  <input type="text" id="teacherName" placeholder="اسم المعلم أو الرقم الوظيفي" />
-  <button onclick="loginTeacher()">دخول</button>
 
-  <div id="teacherPanel" style="display:none;">
-    <h3>لوحة التحكم</h3>
-    <h4>إضافة اختبار جديد</h4>
-    <input type="text" id="examName" placeholder="اسم الاختبار" />
-    <input type="text" id="examCode" placeholder="كود الاختبار" />
-    <input type="number" id="examDuration" placeholder="مدة الاختبار بالدقائق" />
-    <button onclick="addExam()">إضافة</button>
-
-    <h4>الاختبارات</h4>
-    <ul id="examList"></ul>
+  <!-- شعار وزارة التعليم -->
+  <div class="logo">
+    <img src="https://upload.wikimedia.org/wikipedia/ar/thumb/4/45/شعار_وزارة_التعليم_السعودية.svg/512px-شعار_وزارة_التعليم_السعودية.svg.png" alt="شعار وزارة التعليم">
   </div>
 
-  <script src="teacher.js"></script>
+  <!-- واجهة تسجيل دخول المعلم -->
+  <div class="teacher-container">
+    <h2>دخول المعلم</h2>
+    <input type="text" placeholder="اسم المستخدم">
+    <input type="password" placeholder="كلمة المرور">
+    <button>دخول</button>
+  </div>
+
 </body>
 </html>
