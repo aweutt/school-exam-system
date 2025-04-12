@@ -79,27 +79,40 @@
   </div>
 
   <script>
-    // حفظ بيانات المستخدم في Local Storage بعد تسجيل الدخول
+    // إرسال بيانات تسجيل الدخول إلى السيرفر باستخدام AJAX
     document.getElementById("loginForm").addEventListener("submit", function(e) {
       e.preventDefault();
       const username = document.getElementById("user").value;
       const password = document.getElementById("password").value;
       const role = document.getElementById("role").value;
 
-      // محاكاة التحقق من بيانات "يوزر مدرستي" (يمكنك ربطه بحسابات حقيقية لاحقاً)
-      if (username && password) {
-        localStorage.setItem("username", username);
-        localStorage.setItem("userType", role); // حفظ دور المستخدم (طالب أو معلم)
-        
-        // تحديد الصفحة المناسبة بعد تسجيل الدخول
-        if (role === "student") {
-          window.location.href = "student.html"; // صفحة الطالب
-        } else {
-          window.location.href = "teacher.html"; // صفحة المعلم
+      // إرسال البيانات باستخدام AJAX
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "login_server.php", true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+      // إرسال البيانات إلى السيرفر
+      xhr.send(`username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}&role=${encodeURIComponent(role)}`);
+
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText);
+          if (response.success) {
+            // تخزين البيانات في localStorage بناءً على الرد من السيرفر
+            localStorage.setItem("username", username);
+            localStorage.setItem("role", role);
+
+            // التوجيه إلى الصفحة المناسبة
+            if (role === "student") {
+              window.location.href = "student.html";
+            } else {
+              window.location.href = "teacher.html";
+            }
+          } else {
+            alert(response.message);
+          }
         }
-      } else {
-        alert("الرجاء إدخال يوزر وكلمة مرور صحيحين.");
-      }
+      };
     });
   </script>
 </body>
