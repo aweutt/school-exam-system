@@ -85,6 +85,33 @@
     </div>
 
     <textarea class="code-editor" placeholder="ابدأ بكتابة الكود هنا..."></textarea>
+<script>
+  const editor = document.querySelector(".code-editor");
+
+  // استرجاع آخر كود محفوظ
+  const savedCode = localStorage.getItem("draftCode");
+  if (savedCode) {
+    editor.value = savedCode;
+  }
+
+  // حفظ الكود أثناء الكتابة
+  editor.addEventListener("input", () => {
+    localStorage.setItem("draftCode", editor.value);
+  });
+
+  function submitExam() {
+    const finalCode = editor.value;
+    alert("تم تسليم الاختبار بنجاح!");
+
+    // ممكن نرسل الكود لاحقاً للسيرفر أو للمعلم
+    console.log("إجابة الطالب:", finalCode);
+
+    // حذف الكود من التخزين المؤقت
+    localStorage.removeItem("draftCode");
+
+    window.location.href = "index.html";
+  }
+</script>
 
     <div class="actions">
       <div class="help-icons">
