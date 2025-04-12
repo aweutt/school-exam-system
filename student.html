@@ -1,36 +1,55 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>واجهة الطالب</title>
+  <title>لوحة الطالب | Lab Code</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>نظام الاختبارات العملية - الطالب</h1>
+  <div class="login-box">
+    <img src="assets/moe-logo.png" class="logo" alt="شعار وزارة التعليم">
 
-    <!-- تسجيل الدخول -->
-    <div id="login-section">
-      <input type="text" id="student-name" placeholder="اسم الطالب">
-      <input type="text" id="student-id" placeholder="رقم الطالب">
-      <button onclick="login()">دخول</button>
-    </div>
+    <h2>لوحة الطالب</h2>
+    <p class="subtitle">مرحبًا بك، <span id="studentName"></span></p>
+    <p class="subtitle">المرحلة: <span id="studentStage"></span> | الصف: <span id="studentGrade"></span></p>
 
-    <!-- إدخال كود الاختبار -->
-    <div id="code-section" style="display:none;">
-      <input type="text" id="exam-code" placeholder="أدخل كود الاختبار">
-      <button onclick="startExam()">بدء الاختبار</button>
-    </div>
+    <label for="program">اختر البرنامج:</label>
+    <select id="program">
+      <option value="">-- اختر البرنامج --</option>
+      <option value="HTML">HTML</option>
+      <option value="CSS">CSS</option>
+      <option value="JavaScript">JavaScript</option>
+      <option value="Word">Word</option>
+      <option value="Excel">Excel</option>
+    </select>
 
-    <!-- عرض السؤال والعد التنازلي -->
-    <div id="exam-section" style="display:none;">
-      <h3 id="question">السؤال: اكتب مثال على جملة طباعة بلغة Python.</h3>
-      <textarea id="answer" rows="5" placeholder="اكتب إجابتك هنا..."></textarea>
-      <div id="timer">الوقت المتبقي: <span id="countdown">--:--</span></div>
-      <button onclick="submitAnswer()">إرسال</button>
-    </div>
+    <input type="text" id="examCode" placeholder="رمز الاختبار">
+
+    <button onclick="startExam()">بدء الاختبار</button>
   </div>
 
-  <script src="student.js"></script>
+  <script>
+    // عرض معلومات الطالب
+    document.getElementById("studentName").textContent = localStorage.getItem("username");
+    document.getElementById("studentStage").textContent = localStorage.getItem("userStage");
+    document.getElementById("studentGrade").textContent = localStorage.getItem("userGrade");
+
+    function startExam() {
+      const program = document.getElementById("program").value;
+      const examCode = document.getElementById("examCode").value;
+
+      if (!program || !examCode) {
+        alert("يرجى اختيار البرنامج وكتابة رمز الاختبار");
+        return;
+      }
+
+      // تخزين بيانات الاختبار مؤقتًا
+      localStorage.setItem("examProgram", program);
+      localStorage.setItem("examCode", examCode);
+
+      // التوجيه لصفحة تنفيذ الاختبار
+      window.location.href = "exam.html";
+    }
+  </script>
 </body>
 </html>
