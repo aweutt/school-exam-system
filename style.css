@@ -1,56 +1,54 @@
 body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f0f6ff;
+  direction: rtl;
+  text-align: center;
   margin: 0;
   padding: 0;
-  font-family: 'Tajawal', sans-serif;
-  background-color: #f0f4f8;
-  text-align: center;
+}
+
+.login-box {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  width: 350px;
+  margin: 60px auto;
+  padding: 30px;
 }
 
 .logo {
-  padding: 20px;
-}
-
-.logo img {
   width: 120px;
-  height: auto;
-}
-
-/* واجهة المعلم */
-.teacher-container {
-  background-color: #ffffff;
-  margin: 50px auto;
-  padding: 30px;
-  width: 320px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.teacher-container h2 {
   margin-bottom: 20px;
-  color: #1e3a8a;
-  font-size: 22px;
 }
 
-.teacher-container input {
+h2 {
+  color: #0b5394;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+select, input {
   width: 90%;
   padding: 10px;
   margin: 10px 0;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
+  border: 1px solid #0b5394;
+  border-radius: 5px;
 }
 
-.teacher-container button {
-  background-color: #1e3a8a;
+button {
+  background-color: #0b5394;
   color: white;
   padding: 10px 20px;
   border: none;
-  border-radius: 6px;
-  font-size: 14px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.teacher-container button:hover {
-  background-color: #3b4cca;
+button:hover {
+  background-color: #063971;
 }
