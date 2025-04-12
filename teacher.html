@@ -1,24 +1,51 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>واجهة المعلم</title>
+  <title>لوحة المعلم | Lab Code</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="login-box">
+    <img src="assets/moe-logo.png" class="logo" alt="شعار وزارة التعليم">
 
-  <!-- شعار وزارة التعليم -->
-  <div class="logo">
-    <img src="moe-logo.png" alt="شعار وزارة التعليم">
+    <h2>لوحة المعلم</h2>
+    <p class="subtitle">مرحبًا بك، <span id="teacherName"></span></p>
+    <p class="subtitle">المرحلة: <span id="teacherStage"></span> | الصف: <span id="teacherGrade"></span></p>
+
+    <label for="program">اختر البرنامج:</label>
+    <select id="program">
+      <option value="">-- اختر البرنامج --</option>
+      <option value="HTML">HTML</option>
+      <option value="CSS">CSS</option>
+      <option value="JavaScript">JavaScript</option>
+      <option value="Word">Word</option>
+      <option value="Excel">Excel</option>
+    </select>
+
+    <input type="text" id="examCode" placeholder="رمز الاختبار (مثال: 456xyz)">
+
+    <button onclick="publishExam()">نشر الاختبار</button>
   </div>
 
-  <!-- واجهة تسجيل دخول المعلم -->
-  <div class="teacher-container">
-    <h2>دخول المعلم</h2>
-    <input type="text" placeholder="اسم المستخدم">
-    <input type="password" placeholder="كلمة المرور">
-    <button>دخول</button>
-  </div>
+  <script>
+    // عرض معلومات المعلم
+    document.getElementById("teacherName").textContent = localStorage.getItem("username");
+    document.getElementById("teacherStage").textContent = localStorage.getItem("userStage");
+    document.getElementById("teacherGrade").textContent = localStorage.getItem("userGrade");
 
+    function publishExam() {
+      const program = document.getElementById("program").value;
+      const examCode = document.getElementById("examCode").value;
+
+      if (!program || !examCode) {
+        alert("يرجى اختيار البرنامج وكتابة رمز الاختبار");
+        return;
+      }
+
+      alert("تم نشر الاختبار بنجاح! رمز الاختبار: " + examCode);
+      // مستقبلاً: إرسال الكود للسيرفر أو تخزينه لربطه بالطلاب
+    }
+  </script>
 </body>
 </html>
