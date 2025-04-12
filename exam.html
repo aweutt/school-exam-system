@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>تنفيذ الاختبار | Lab Code</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .exam-box {
+      background: #fff;
+      padding: 20px;
+      margin: 30px auto;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 1000px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      direction: rtl;
+    }
+
+    .info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .code-editor {
+      width: 100%;
+      height: 300px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 14px;
+      direction: ltr;
+    }
+
+    .actions {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .help-icons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .help-icons button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      background-color: #e0ecff;
+      cursor: pointer;
+    }
+
+    #timer {
+      font-weight: bold;
+      color: #d62828;
+    }
+
+    .submit-btn {
+      background-color: #0b5394;
+      color: white;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .submit-btn:hover {
+      background-color: #063971;
+    }
+  </style>
+</head>
+<body>
+  <div class="exam-box">
+    <div class="info-bar">
+      <div>الطالب: <strong id="studentName"></strong></div>
+      <div>البرنامج: <strong id="examProgram"></strong></div>
+      <div>الرمز: <strong id="examCode"></strong></div>
+      <div>الوقت المتبقي: <span id="timer">--:--</span></div>
+    </div>
+
+    <textarea class="code-editor" placeholder="ابدأ بكتابة الكود هنا..."></textarea>
+
+    <div class="actions">
+      <div class="help-icons">
+        <button onclick="showHelp('html')">HTML</button>
+        <button onclick="showHelp('css')">CSS</button>
+        <button onclick="showHelp('js')">JS</button>
+      </div>
+
+      <button class="submit-btn" onclick="submitExam()">تسليم الاختبار</button>
+    </div>
+  </div>
+
+  <script>
+    // عرض بيانات الطالب
+    document.getElementById("studentName").textContent = localStorage.getItem("username");
+    document.getElementById("examProgram").textContent = localStorage.getItem("examProgram");
+    document.getElementById("examCode").textContent = localStorage.getItem("examCode");
+
+    // عداد الوقت
+    let timeLeft = 20 * 60; // 20 دقيقة
+    const timerElement = document.getElementById("timer");
+
+    function updateTimer() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      if (timeLeft > 0) {
+        timeLeft--;
+      } else {
+        submitExam();
+      }
+    }
+
+    setInterval(updateTimer, 1000);
+
+    function showHelp(type) {
+      alert(`مساعدة في ${type.toUpperCase()} (المحتوى قادم لاحقًا)`);
+    }
+
+    function submitExam() {
+      alert("تم تسليم الاختبار بنجاح!");
+      // مستقبلاً: ترسل الإجابة للسيرفر
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
