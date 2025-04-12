@@ -1,19 +1,41 @@
-/* إزالة الهوامش الافتراضية لجسم الصفحة */
-body {
-  margin: 0;
-  padding: 0;
-}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>Lab Code | تسجيل الدخول</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="login-box">
+    <img src="assets/moe-logo.png" class="logo" alt="شعار وزارة التعليم">
 
-/* تنسيق الحاوية الخاصة بالشعار */
-.logo-container {
-  position: absolute; /* لتثبيته في موقع معين */
-  top: 10px;          /* مسافة من الأعلى */
-  right: 10px;        /* مسافة من اليمين */
-}
+    <h2>Lab Code</h2>
+    <p class="subtitle">المنصة الرقمية للاختبارات العملية لجميع المراحل الدراسية</p>
 
-/* تعديل حجم الشعار وإزالة خلفيته إن وجدت */
-.logo {
-  width: 80px;        /* تعديل الحجم حسب الحاجة */
-  height: auto;
-  background: transparent; /* تفريغ الخلفية */
-}
+    <label for="stage">اختر المرحلة الدراسية:</label>
+    <select id="stage" onchange="populateGrades()">
+      <option value="">-- اختر المرحلة --</option>
+      <option value="ابتدائي">ابتدائي</option>
+      <option value="متوسط">متوسط</option>
+      <option value="ثانوي">ثانوي</option>
+    </select>
+
+    <label for="grade">اختر الصف:</label>
+    <select id="grade">
+      <option value="">-- اختر الصف --</option>
+    </select>
+
+    <label for="role">الدور:</label>
+    <select id="role">
+      <option value="طالب">طالب</option>
+      <option value="معلم">معلم</option>
+    </select>
+
+    <input type="text" id="username" placeholder="أدخل يوزر مدرستي" required>
+
+    <button onclick="login()">دخول</button>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
