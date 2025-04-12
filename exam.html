@@ -5,6 +5,11 @@
   <title>تنفيذ الاختبار | Lab Code</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    body {
+      background-color: #e6f0ff;
+      font-family: 'Tahoma', sans-serif;
+    }
+
     .exam-box {
       background: #fff;
       padding: 20px;
@@ -73,6 +78,18 @@
     .submit-btn:hover {
       background-color: #063971;
     }
+
+    /* إضافة تنسيق للمحتوى الحي */
+    .live-preview {
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      min-height: 200px;
+      text-align: center;
+      overflow-y: auto;
+    }
   </style>
 </head>
 <body>
@@ -85,33 +102,11 @@
     </div>
 
     <textarea class="code-editor" placeholder="ابدأ بكتابة الكود هنا..."></textarea>
-<script>
-  const editor = document.querySelector(".code-editor");
 
-  // استرجاع آخر كود محفوظ
-  const savedCode = localStorage.getItem("draftCode");
-  if (savedCode) {
-    editor.value = savedCode;
-  }
-
-  // حفظ الكود أثناء الكتابة
-  editor.addEventListener("input", () => {
-    localStorage.setItem("draftCode", editor.value);
-  });
-
-  function submitExam() {
-    const finalCode = editor.value;
-    alert("تم تسليم الاختبار بنجاح!");
-
-    // ممكن نرسل الكود لاحقاً للسيرفر أو للمعلم
-    console.log("إجابة الطالب:", finalCode);
-
-    // حذف الكود من التخزين المؤقت
-    localStorage.removeItem("draftCode");
-
-    window.location.href = "index.html";
-  }
-</script>
+    <!-- هنا سيتم عرض المعاينة الحية -->
+    <div class="live-preview" id="livePreview">
+      <p>سيتم عرض المعاينة هنا...</p>
+    </div>
 
     <div class="actions">
       <div class="help-icons">
@@ -129,6 +124,26 @@
     document.getElementById("studentName").textContent = localStorage.getItem("username");
     document.getElementById("examProgram").textContent = localStorage.getItem("examProgram");
     document.getElementById("examCode").textContent = localStorage.getItem("examCode");
+
+    const editor = document.querySelector(".code-editor");
+
+    // استرجاع آخر كود محفوظ
+    const savedCode = localStorage.getItem("draftCode");
+    if (savedCode) {
+      editor.value = savedCode;
+    }
+
+    // حفظ الكود أثناء الكتابة
+    editor.addEventListener("input", () => {
+      localStorage.setItem("draftCode", editor.value);
+      updatePreview(editor.value); // تحديث المعاينة الحية
+    });
+
+    // تحديث المعاينة الحية
+    function updatePreview(code) {
+      const previewElement = document.getElementById("livePreview");
+      previewElement.innerHTML = code; // عرض الكود بشكل حي
+    }
 
     // عداد الوقت
     let timeLeft = 20 * 60; // 20 دقيقة
@@ -152,8 +167,13 @@
     }
 
     function submitExam() {
+      const finalCode = editor.value;
       alert("تم تسليم الاختبار بنجاح!");
-      // مستقبلاً: ترسل الإجابة للسيرفر
+
+      // تخزين مؤقت - لاحقًا ترسل للمعلم
+      console.log("إجابة الطالب:", finalCode);
+
+      localStorage.removeItem("draftCode");
       window.location.href = "index.html";
     }
   </script>
