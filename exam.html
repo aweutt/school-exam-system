@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>تنفيذ الاختبار | Lab Code</title>
-  <link rel="stylesheet" href="style.css">
   <style>
     body {
-      font-family: 'Tajawal', sans-serif;
+      font-family: 'Tahoma', sans-serif;
+      direction: rtl;
       background-color: #f0f8ff;
+      padding: 20px;
     }
 
     .exam-box {
@@ -18,7 +19,6 @@
       width: 90%;
       max-width: 1000px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      direction: rtl;
     }
 
     .info-bar {
@@ -66,7 +66,7 @@
       color: #d62828;
     }
 
-    .submit-btn, .preview-btn {
+    .submit-btn {
       background-color: #0b5394;
       color: white;
       padding: 10px 25px;
@@ -75,14 +75,14 @@
       cursor: pointer;
     }
 
-    .submit-btn:hover, .preview-btn:hover {
+    .submit-btn:hover {
       background-color: #063971;
     }
 
-    #previewFrame {
+    iframe.preview {
+      margin-top: 20px;
       width: 100%;
       height: 300px;
-      margin-top: 20px;
       border: 1px solid #ccc;
       border-radius: 8px;
     }
@@ -97,7 +97,9 @@
       <div>الوقت المتبقي: <span id="timer">--:--</span></div>
     </div>
 
-    <textarea class="code-editor" placeholder="ابدأ بكتابة الكود هنا..."></textarea>
+    <textarea class="code-editor" id="codeEditor" placeholder="ابدأ بكتابة الكود هنا..."></textarea>
+
+    <iframe class="preview" id="livePreview"></iframe>
 
     <div class="actions">
       <div class="help-icons">
@@ -106,32 +108,53 @@
         <button onclick="showHelp('js')">JS</button>
       </div>
 
-      <div>
-        <button class="preview-btn" onclick="previewCode()">معاينة الكود</button>
-        <button class="submit-btn" onclick="submitExam()">تسليم الاختبار</button>
-      </div>
+      <button class="submit-btn" onclick="submitExam()">تسليم الاختبار</button>
     </div>
-
-    <iframe id="previewFrame"></iframe>
   </div>
 
   <script>
+    const editor = document.getElementById("codeEditor");
+    const preview = document.getElementById("livePreview");
+
     // عرض بيانات الطالب
-    document.getElementById("studentName").textContent = localStorage.getItem("username");
-    document.getElementById("examProgram").textContent = localStorage.getItem("examProgram");
-    document.getElementById("examCode").textContent = localStorage.getItem("examCode");
+    const studentName = localStorage.getItem("username");
+    const examProgram = localStorage.getItem("examProgram");
+    const examCode = localStorage.getItem("examCode");
+    const duration = parseInt(localStorage.getItem("examDuration")) || 20;
 
-    // محرر الكود وحفظ تلقائي
-    const editor = document.querySelector(".code-editor");
+    document.getElementById("studentName").textContent = studentName;
+    document.getElementById("examProgram").textContent = examProgram;
+    document.getElementById("examCode").textContent = examCode;
+
+    // تسجيل الطالب في قائمة الطلاب المتصلين
+    function registerStudent(code, name) {
+      let students = JSON.parse(localStorage.getItem(`students-${code}`)) || [];
+      if (!students.includes(name)) {
+        students.push(name);
+        localStorage.setItem(`students-${code}`, JSON.stringify(students));
+      }
+    }
+    registerStudent(examCode, studentName);
+
+    // استرجاع الكود المحفوظ
     const savedCode = localStorage.getItem("draftCode");
-    if (savedCode) editor.value = savedCode;
+    if (savedCode) {
+      editor.value = savedCode;
+      updatePreview(savedCode);
+    }
 
+    // حفظ الكود أثناء الكتابة وتحديث المعاينة
     editor.addEventListener("input", () => {
       localStorage.setItem("draftCode", editor.value);
+      updatePreview(editor.value);
     });
 
-    // عداد الوقت
-    let timeLeft = 20 * 60;
+    function updatePreview(code) {
+      preview.srcdoc = code;
+    }
+
+    // مؤقت تنازلي
+    let timeLeft = duration * 60;
     const timerElement = document.getElementById("timer");
 
     function updateTimer() {
@@ -146,25 +169,17 @@
     }
     setInterval(updateTimer, 1000);
 
-    // المعاينة المباشرة
-    function previewCode() {
-      const code = editor.value;
-      const iframe = document.getElementById("previewFrame");
-      iframe.srcdoc = code;
+    function showHelp(type) {
+      alert(`مساعدة في ${type.toUpperCase()} (المحتوى سيضاف لاحقًا)`);
     }
 
-    // تسليم الاختبار
     function submitExam() {
       const finalCode = editor.value;
       alert("تم تسليم الاختبار بنجاح!");
       console.log("إجابة الطالب:", finalCode);
+
       localStorage.removeItem("draftCode");
       window.location.href = "index.html";
-    }
-
-    // المساعدة
-    function showHelp(type) {
-      alert(`مساعدة في ${type.toUpperCase()} (المحتوى قادم لاحقًا)`);
     }
   </script>
 </body>
