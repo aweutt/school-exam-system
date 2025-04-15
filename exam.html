@@ -6,8 +6,8 @@
   <link rel="stylesheet" href="style.css">
   <style>
     body {
-      background-color: #e6f0ff;
-      font-family: 'Tahoma', sans-serif;
+      font-family: 'Tajawal', sans-serif;
+      background-color: #f0f8ff;
     }
 
     .exam-box {
@@ -66,7 +66,7 @@
       color: #d62828;
     }
 
-    .submit-btn {
+    .submit-btn, .preview-btn {
       background-color: #0b5394;
       color: white;
       padding: 10px 25px;
@@ -75,20 +75,16 @@
       cursor: pointer;
     }
 
-    .submit-btn:hover {
+    .submit-btn:hover, .preview-btn:hover {
       background-color: #063971;
     }
 
-    /* إضافة تنسيق للمحتوى الحي */
-    .live-preview {
+    #previewFrame {
+      width: 100%;
+      height: 300px;
       margin-top: 20px;
-      padding: 20px;
       border: 1px solid #ccc;
       border-radius: 8px;
-      background-color: #f9f9f9;
-      min-height: 200px;
-      text-align: center;
-      overflow-y: auto;
     }
   </style>
 </head>
@@ -103,11 +99,6 @@
 
     <textarea class="code-editor" placeholder="ابدأ بكتابة الكود هنا..."></textarea>
 
-    <!-- هنا سيتم عرض المعاينة الحية -->
-    <div class="live-preview" id="livePreview">
-      <p>سيتم عرض المعاينة هنا...</p>
-    </div>
-
     <div class="actions">
       <div class="help-icons">
         <button onclick="showHelp('html')">HTML</button>
@@ -115,8 +106,13 @@
         <button onclick="showHelp('js')">JS</button>
       </div>
 
-      <button class="submit-btn" onclick="submitExam()">تسليم الاختبار</button>
+      <div>
+        <button class="preview-btn" onclick="previewCode()">معاينة الكود</button>
+        <button class="submit-btn" onclick="submitExam()">تسليم الاختبار</button>
+      </div>
     </div>
+
+    <iframe id="previewFrame"></iframe>
   </div>
 
   <script>
@@ -125,28 +121,17 @@
     document.getElementById("examProgram").textContent = localStorage.getItem("examProgram");
     document.getElementById("examCode").textContent = localStorage.getItem("examCode");
 
+    // محرر الكود وحفظ تلقائي
     const editor = document.querySelector(".code-editor");
-
-    // استرجاع آخر كود محفوظ
     const savedCode = localStorage.getItem("draftCode");
-    if (savedCode) {
-      editor.value = savedCode;
-    }
+    if (savedCode) editor.value = savedCode;
 
-    // حفظ الكود أثناء الكتابة
     editor.addEventListener("input", () => {
       localStorage.setItem("draftCode", editor.value);
-      updatePreview(editor.value); // تحديث المعاينة الحية
     });
 
-    // تحديث المعاينة الحية
-    function updatePreview(code) {
-      const previewElement = document.getElementById("livePreview");
-      previewElement.innerHTML = code; // عرض الكود بشكل حي
-    }
-
     // عداد الوقت
-    let timeLeft = 20 * 60; // 20 دقيقة
+    let timeLeft = 20 * 60;
     const timerElement = document.getElementById("timer");
 
     function updateTimer() {
@@ -159,22 +144,27 @@
         submitExam();
       }
     }
-
     setInterval(updateTimer, 1000);
 
-    function showHelp(type) {
-      alert(`مساعدة في ${type.toUpperCase()} (المحتوى قادم لاحقًا)`);
+    // المعاينة المباشرة
+    function previewCode() {
+      const code = editor.value;
+      const iframe = document.getElementById("previewFrame");
+      iframe.srcdoc = code;
     }
 
+    // تسليم الاختبار
     function submitExam() {
       const finalCode = editor.value;
       alert("تم تسليم الاختبار بنجاح!");
-
-      // تخزين مؤقت - لاحقًا ترسل للمعلم
       console.log("إجابة الطالب:", finalCode);
-
       localStorage.removeItem("draftCode");
       window.location.href = "index.html";
+    }
+
+    // المساعدة
+    function showHelp(type) {
+      alert(`مساعدة في ${type.toUpperCase()} (المحتوى قادم لاحقًا)`);
     }
   </script>
 </body>
