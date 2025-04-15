@@ -1,20 +1,67 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Lab Code | تسجيل الدخول</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Tahoma', sans-serif;
+      background-color: #f0f8ff;
+      direction: rtl;
+      padding: 30px;
+    }
+
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #0b5394;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      background-color: #0b5394;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #063971;
+    }
+  </style>
 </head>
 <body>
   <div class="login-box">
-    <img src="assets/moe-logo.png" class="logo" alt="شعار وزارة التعليم">
-
     <h2>Lab Code</h2>
-    <p class="subtitle">المنصة الرقمية للاختبارات العملية لجميع المراحل الدراسية</p>
 
-    <label for="stage">اختر المرحلة الدراسية:</label>
-    <select id="stage" onchange="populateGrades()">
-      <option value="">-- اختر المرحلة --</option>
+    <label for="level">اختر المرحلة:</label>
+    <select id="level" onchange="updateGrades()">
+      <option value="">-- اختر --</option>
       <option value="ابتدائي">ابتدائي</option>
       <option value="متوسط">متوسط</option>
       <option value="ثانوي">ثانوي</option>
@@ -22,20 +69,67 @@
 
     <label for="grade">اختر الصف:</label>
     <select id="grade">
-      <option value="">-- اختر الصف --</option>
+      <option value="">-- اختر المرحلة أولاً --</option>
     </select>
 
     <label for="role">الدور:</label>
     <select id="role">
+      <option value="">-- اختر --</option>
       <option value="طالب">طالب</option>
       <option value="معلم">معلم</option>
     </select>
 
-    <input type="text" id="username" placeholder="أدخل يوزر مدرستي" required>
+    <label for="username">اسم المستخدم (يوزر مدرستي):</label>
+    <input type="text" id="username" placeholder="أدخل اسم المستخدم" />
 
-    <button onclick="login()">دخول</button>
+    <button onclick="login()">تسجيل الدخول</button>
   </div>
 
-  <script src="main.js"></script>
+  <script>
+    function updateGrades() {
+      const level = document.getElementById("level").value;
+      const grade = document.getElementById("grade");
+      grade.innerHTML = "";
+
+      let options = [];
+
+      if (level === "ابتدائي" || level === "متوسط" || level === "ثانوي") {
+        options = ["أولى", "ثانية", "ثالثة"];
+        if (level === "ابتدائي") options.push("رابعة", "خامسة", "سادسة");
+      }
+
+      options.forEach(opt => {
+        const option = document.createElement("option");
+        option.value = opt;
+        option.textContent = opt;
+        grade.appendChild(option);
+      });
+    }
+
+    function login() {
+      const level = document.getElementById("level").value;
+      const grade = document.getElementById("grade").value;
+      const role = document.getElementById("role").value;
+      const username = document.getElementById("username").value.trim();
+
+      if (!level || !grade || !role || !username) {
+        alert("يرجى تعبئة جميع الحقول.");
+        return;
+      }
+
+      // حفظ البيانات في localStorage
+      localStorage.setItem("level", level);
+      localStorage.setItem("grade", grade);
+      localStorage.setItem("role", role);
+      localStorage.setItem("username", username);
+
+      // التوجيه حسب الدور
+      if (role === "طالب") {
+        window.location.href = "exam.html";
+      } else {
+        window.location.href = "teacher.html";
+      }
+    }
+  </script>
 </body>
 </html>
