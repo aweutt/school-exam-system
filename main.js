@@ -1,43 +1,30 @@
-function populateGrades() {
-  const stage = document.getElementById("stage").value;
-  const gradeSelect = document.getElementById("grade");
-  gradeSelect.innerHTML = '<option value="">-- اختر الصف --</option>';
+// بيانات وهمية
+const users = {
+  "student1": { password: "1234", role: "student" },
+  "teacher1": { password: "abcd", role: "teacher" }
+};
 
-  let grades = [];
+// عند إرسال نموذج الدخول
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+  e.preventDefault();
 
-  if (stage === "ابتدائي") grades = ["أولى", "ثانية", "ثالثة", "رابعة", "خامسة", "سادسة"];
-  if (stage === "متوسط") grades = ["أولى", "ثانية", "ثالثة"];
-  if (stage === "ثانوي") grades = ["أولى", "ثانية", "ثالثة"];
-
-  grades.forEach(g => {
-    const option = document.createElement("option");
-    option.value = g;
-    option.textContent = `${g} ${stage}`;
-    gradeSelect.appendChild(option);
-  });
-}
-
-function login() {
-  const stage = document.getElementById("stage").value;
-  const grade = document.getElementById("grade").value;
-  const role = document.getElementById("role").value;
   const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const role = document.getElementById("role").value;
+  const errorEl = document.getElementById("error");
 
-  if (!stage || !grade || !username) {
-    alert("يرجى تعبئة جميع الحقول");
-    return;
-  }
+  if (users[username] && users[username].password === password && users[username].role === role) {
+    // حفظ البيانات في التخزين المحلي
+    localStorage.setItem("username", username);
+    localStorage.setItem("role", role);
 
-  // حفظ معلومات المستخدم مؤقتاً
-  localStorage.setItem("userStage", stage);
-  localStorage.setItem("userGrade", grade);
-  localStorage.setItem("userRole", role);
-  localStorage.setItem("username", username);
-
-  // التوجيه حسب الدور
-  if (role === "معلم") {
-    window.location.href = "teacher.html";
+    // تحويل حسب الدور
+    if (role === "student") {
+      window.location.href = "student.html";
+    } else {
+      window.location.href = "teacher.html";
+    }
   } else {
-    window.location.href = "student.html";
+    errorEl.textContent = "بيانات الدخول غير صحيحة!";
   }
-}
+});
