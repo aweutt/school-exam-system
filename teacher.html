@@ -4,47 +4,145 @@
   <meta charset="UTF-8">
   <title>لوحة المعلم | Lab Code</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Tahoma', sans-serif;
+      direction: rtl;
+      background-color: #f0f8ff;
+      padding: 20px;
+    }
+
+    .teacher-box {
+      background-color: white;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 1000px;
+      margin: auto;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #0b5394;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    select, input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      background-color: #0b5394;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #063971;
+    }
+
+    .students-list {
+      margin-top: 30px;
+    }
+
+    .students-list ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .students-list li {
+      background: #e7f0ff;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-  <div class="login-box">
-    <img src="assets/moe-logo.png" class="logo" alt="شعار وزارة التعليم">
+  <div class="teacher-box">
+    <h2>مرحبًا بك يا <span id="teacherName"></span>!</h2>
 
-    <h2>لوحة المعلم</h2>
-    <p class="subtitle">مرحبًا بك، <span id="teacherName"></span></p>
-    <p class="subtitle">المرحلة: <span id="teacherStage"></span> | الصف: <span id="teacherGrade"></span></p>
-
-    <label for="program">اختر البرنامج:</label>
-    <select id="program">
-      <option value="">-- اختر البرنامج --</option>
-      <option value="HTML">HTML</option>
-      <option value="CSS">CSS</option>
-      <option value="JavaScript">JavaScript</option>
-      <option value="Word">Word</option>
-      <option value="Excel">Excel</option>
+    <label>اختر الصف:</label>
+    <select id="grade">
+      <option>أولى ثانوي</option>
+      <option>ثانية ثانوي</option>
+      <option>ثالثة ثانوي</option>
     </select>
 
-    <input type="text" id="examCode" placeholder="رمز الاختبار (مثال: 456xyz)">
+    <label>اختر البرنامج:</label>
+    <select id="program">
+      <option>HTML</option>
+      <option>CSS</option>
+      <option>JavaScript</option>
+    </select>
+
+    <label>رمز الاختبار:</label>
+    <input type="text" id="examCode" placeholder="مثال: 132A" />
+
+    <label>مدة الاختبار (بالدقائق):</label>
+    <input type="number" id="duration" placeholder="مثال: 20" />
 
     <button onclick="publishExam()">نشر الاختبار</button>
+
+    <div class="students-list">
+      <h3>الطلاب المتصلين:</h3>
+      <ul id="studentsList">
+        <li>لا يوجد طلاب حالياً</li>
+      </ul>
+    </div>
   </div>
 
   <script>
-    // عرض معلومات المعلم
-    document.getElementById("teacherName").textContent = localStorage.getItem("username");
-    document.getElementById("teacherStage").textContent = localStorage.getItem("userStage");
-    document.getElementById("teacherGrade").textContent = localStorage.getItem("userGrade");
+    // عرض اسم المعلم من التخزين المحلي
+    document.getElementById("teacherName").textContent = localStorage.getItem("username") || "معلم";
 
     function publishExam() {
+      const grade = document.getElementById("grade").value;
       const program = document.getElementById("program").value;
-      const examCode = document.getElementById("examCode").value;
+      const code = document.getElementById("examCode").value;
+      const duration = document.getElementById("duration").value;
 
-      if (!program || !examCode) {
-        alert("يرجى اختيار البرنامج وكتابة رمز الاختبار");
+      if (!code || !duration) {
+        alert("يرجى إدخال رمز ومدة الاختبار.");
         return;
       }
 
-      alert("تم نشر الاختبار بنجاح! رمز الاختبار: " + examCode);
-      // مستقبلاً: إرسال الكود للسيرفر أو تخزينه لربطه بالطلاب
+      // تخزين بيانات الاختبار مؤقتًا
+      localStorage.setItem("examCode", code);
+      localStorage.setItem("examProgram", program);
+      localStorage.setItem("examDuration", duration);
+
+      alert(`تم نشر الاختبار بنجاح!\nالكود: ${code}`);
+
+      // تحديث قائمة الطلاب المتصلين بعد النشر
+      loadStudents(code);
+    }
+
+    function loadStudents(code) {
+      const students = JSON.parse(localStorage.getItem(`students-${code}`)) || [];
+      const list = document.getElementById("studentsList");
+      list.innerHTML = "";
+
+      if (students.length === 0) {
+        list.innerHTML = "<li>لا يوجد طلاب حالياً</li>";
+      } else {
+        students.forEach(student => {
+          const li = document.createElement("li");
+          li.textContent = student;
+          list.appendChild(li);
+        });
+      }
     }
   </script>
 </body>
