@@ -1,185 +1,133 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <title>تنفيذ الاختبار | Lab Code</title>
+  <meta charset="UTF-8" />
+  <title>تنفيذ الاختبار</title>
   <style>
     body {
       font-family: 'Tahoma', sans-serif;
+      background-color: #f2f2f2;
       direction: rtl;
-      background-color: #f0f8ff;
-      padding: 20px;
+      padding: 30px;
     }
 
     .exam-box {
-      background: #fff;
+      background-color: white;
       padding: 20px;
-      margin: 30px auto;
       border-radius: 10px;
-      width: 90%;
-      max-width: 1000px;
+      max-width: 800px;
+      margin: auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
-    .info-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
+    h2 {
+      color: #0b5394;
     }
 
-    .code-editor {
+    textarea {
       width: 100%;
-      height: 300px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      height: 200px;
+      margin-top: 15px;
       padding: 10px;
       font-family: monospace;
-      font-size: 14px;
-      direction: ltr;
-    }
-
-    .actions {
-      margin-top: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .help-icons {
-      display: flex;
-      gap: 10px;
-    }
-
-    .help-icons button {
-      padding: 8px 12px;
-      border: none;
       border-radius: 6px;
-      background-color: #e0ecff;
-      cursor: pointer;
+      border: 1px solid #ccc;
     }
 
-    #timer {
-      font-weight: bold;
-      color: #d62828;
-    }
-
-    .submit-btn {
+    button {
+      margin-top: 15px;
       background-color: #0b5394;
       color: white;
-      padding: 10px 25px;
       border: none;
+      padding: 10px 20px;
       border-radius: 6px;
       cursor: pointer;
     }
 
-    .submit-btn:hover {
-      background-color: #063971;
-    }
-
-    iframe.preview {
+    .preview {
+      background-color: #eef5ff;
+      padding: 15px;
       margin-top: 20px;
-      width: 100%;
-      height: 300px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      border-radius: 6px;
+      font-family: monospace;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
   <div class="exam-box">
-    <div class="info-bar">
-      <div>الطالب: <strong id="studentName"></strong></div>
-      <div>البرنامج: <strong id="examProgram"></strong></div>
-      <div>الرمز: <strong id="examCode"></strong></div>
-      <div>الوقت المتبقي: <span id="timer">--:--</span></div>
-    </div>
+    <h2>تنفيذ الاختبار</h2>
 
-    <textarea class="code-editor" id="codeEditor" placeholder="ابدأ بكتابة الكود هنا..."></textarea>
+    <label for="studentName">اسم الطالب:</label>
+    <input type="text" id="studentName" placeholder="أدخل اسمك" />
 
-    <iframe class="preview" id="livePreview"></iframe>
+    <label for="examCode">رمز الاختبار:</label>
+    <input type="text" id="examCode" placeholder="أدخل رمز الاختبار" />
 
-    <div class="actions">
-      <div class="help-icons">
-        <button onclick="showHelp('html')">HTML</button>
-        <button onclick="showHelp('css')">CSS</button>
-        <button onclick="showHelp('js')">JS</button>
-      </div>
+    <textarea id="codeInput" placeholder="اكتب كودك هنا..."></textarea>
 
-      <button class="submit-btn" onclick="submitExam()">تسليم الاختبار</button>
-    </div>
+    <button onclick="saveTemp()">حفظ مؤقت</button>
+    <button onclick="submitExam()">تسليم</button>
+
+    <div class="preview" id="codePreview"></div>
   </div>
 
   <script>
-    const editor = document.getElementById("codeEditor");
-    const preview = document.getElementById("livePreview");
+    const codeInput = document.getElementById("codeInput");
+    const preview = document.getElementById("codePreview");
 
-    // عرض بيانات الطالب
-    const studentName = localStorage.getItem("username");
-    const examProgram = localStorage.getItem("examProgram");
-    const examCode = localStorage.getItem("examCode");
-    const duration = parseInt(localStorage.getItem("examDuration")) || 20;
-
-    document.getElementById("studentName").textContent = studentName;
-    document.getElementById("examProgram").textContent = examProgram;
-    document.getElementById("examCode").textContent = examCode;
-
-    // تسجيل الطالب في قائمة الطلاب المتصلين
-    function registerStudent(code, name) {
-      let students = JSON.parse(localStorage.getItem(`students-${code}`)) || [];
-      if (!students.includes(name)) {
-        students.push(name);
-        localStorage.setItem(`students-${code}`, JSON.stringify(students));
-      }
-    }
-    registerStudent(examCode, studentName);
-
-    // استرجاع الكود المحفوظ
-    const savedCode = localStorage.getItem("draftCode");
-    if (savedCode) {
-      editor.value = savedCode;
-      updatePreview(savedCode);
-    }
-
-    // حفظ الكود أثناء الكتابة وتحديث المعاينة
-    editor.addEventListener("input", () => {
-      localStorage.setItem("draftCode", editor.value);
-      updatePreview(editor.value);
+    // المعاينة الحية
+    codeInput.addEventListener("input", () => {
+      preview.textContent = codeInput.value;
     });
 
-    function updatePreview(code) {
-      preview.srcdoc = code;
-    }
+    function saveTemp() {
+      const name = document.getElementById("studentName").value.trim();
+      const code = document.getElementById("codeInput").value;
+      const examCode = document.getElementById("examCode").value.trim();
 
-    // مؤقت تنازلي
-    let timeLeft = duration * 60;
-    const timerElement = document.getElementById("timer");
-
-    function updateTimer() {
-      const minutes = Math.floor(timeLeft / 60);
-      const seconds = timeLeft % 60;
-      timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-      if (timeLeft > 0) {
-        timeLeft--;
-      } else {
-        submitExam();
+      if (!name || !examCode) {
+        alert("يرجى إدخال الاسم ورمز الاختبار.");
+        return;
       }
-    }
-    setInterval(updateTimer, 1000);
 
-    function showHelp(type) {
-      alert(`مساعدة في ${type.toUpperCase()} (المحتوى سيضاف لاحقًا)`);
+      const studentsKey = `students-${examCode}`;
+      const studentsData = JSON.parse(localStorage.getItem(studentsKey)) || [];
+
+      const existingIndex = studentsData.findIndex(s => s.name === name);
+      const now = new Date().toLocaleTimeString();
+
+      if (existingIndex >= 0) {
+        studentsData[existingIndex].time = now;
+        studentsData[existingIndex].submitted = false;
+      } else {
+        studentsData.push({ name, time: now, submitted: false });
+      }
+
+      localStorage.setItem(studentsKey, JSON.stringify(studentsData));
+      alert("تم الحفظ المؤقت.");
     }
 
     function submitExam() {
-      const finalCode = editor.value;
-      alert("تم تسليم الاختبار بنجاح!");
-      console.log("إجابة الطالب:", finalCode);
+      const name = document.getElementById("studentName").value.trim();
+      const examCode = document.getElementById("examCode").value.trim();
 
-      localStorage.removeItem("draftCode");
-      window.location.href = "index.html";
+      if (!name || !examCode) {
+        alert("يرجى إدخال الاسم ورمز الاختبار.");
+        return;
+      }
+
+      const studentsKey = `students-${examCode}`;
+      const studentsData = JSON.parse(localStorage.getItem(studentsKey)) || [];
+
+      const student = studentsData.find(s => s.name === name);
+      if (student) {
+        student.submitted = true;
+        localStorage.setItem(studentsKey, JSON.stringify(studentsData));
+        alert("تم تسليم الاختبار.");
+      } else {
+        alert("يجب أولاً الحفظ المؤقت قبل التسليم.");
+      }
     }
   </script>
 </body>
