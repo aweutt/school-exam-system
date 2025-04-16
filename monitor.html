@@ -49,10 +49,18 @@
       white-space: pre-wrap;
       text-align: left;
     }
+
+    .refresh-time {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #666;
+    }
   </style>
 </head>
 <body>
   <h1>لوحة إشراف المعلم - المتابعة المباشرة</h1>
+  <div class="refresh-time" id="refreshTime">آخر تحديث: جاري التحميل...</div>
 
   <table>
     <thead>
@@ -70,22 +78,34 @@
   </table>
 
   <script>
-    const submissions = JSON.parse(localStorage.getItem("studentsSubmissions")) || [];
-    const tableBody = document.getElementById("studentsTableBody");
+    function updateTable() {
+      const submissions = JSON.parse(localStorage.getItem("studentsSubmissions")) || [];
+      const tableBody = document.getElementById("studentsTableBody");
+      const refreshTime = document.getElementById("refreshTime");
 
-    submissions.forEach(student => {
-      const row = document.createElement("tr");
+      tableBody.innerHTML = ""; // مسح القديم
 
-      row.innerHTML = `
-        <td>${student.name}</td>
-        <td>${student.program}</td>
-        <td>${student.code}</td>
-        <td>${student.time}</td>
-        <td><div class="code-box">${student.answer}</div></td>
-      `;
+      submissions.forEach(student => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${student.name}</td>
+          <td>${student.program}</td>
+          <td>${student.code}</td>
+          <td>${student.time}</td>
+          <td><div class="code-box">${student.answer}</div></td>
+        `;
+        tableBody.appendChild(row);
+      });
 
-      tableBody.appendChild(row);
-    });
+      const now = new Date();
+      refreshTime.textContent = `آخر تحديث: ${now.toLocaleTimeString()}`;
+    }
+
+    // تحديث أول مرة
+    updateTable();
+
+    // تحديث كل 60 ثانية تلقائيًا
+    setInterval(updateTable, 60000);
   </script>
 </body>
 </html>
