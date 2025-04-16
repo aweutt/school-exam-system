@@ -1,86 +1,111 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>لوحة إشراف المعلم</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>لوحة الإشراف</title>
+  <link rel="stylesheet" href="style.css">
   <style>
     body {
       font-family: 'Tahoma', sans-serif;
-      background-color: #f0f4f8;
+      background-color: #f4f8fb;
+      margin: 0;
       padding: 20px;
     }
 
-    h1 {
-      text-align: center;
-      color: #2c3e50;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+    }
+
+    .header img {
+      height: 50px;
+    }
+
+    .teacher-info {
+      font-size: 18px;
+    }
+
+    h2 {
+      color: #007bff;
+      margin-top: 40px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
       background-color: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
       text-align: center;
     }
 
     th {
-      background-color: #3498db;
-      color: white;
+      background-color: #f1f1f1;
+      color: #333;
     }
 
-    .export-btn {
-      background-color: #3498db;
-      color: white;
-      padding: 10px 18px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background-color 0.3s ease;
-    }
-
-    .export-btn:hover {
-      background-color: #2980b9;
-    }
-
-    .export-buttons {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      margin-top: 20px;
+    tr:hover {
+      background-color: #f9f9f9;
     }
   </style>
 </head>
 <body>
-  <h1>لوحة إشراف المعلم</h1>
 
-  <table id="students-table">
+  <div class="header">
+    <img src="moe-logo.png" alt="شعار وزارة التعليم">
+    <div class="teacher-info" id="teacherName">مرحبًا، </div>
+  </div>
+
+  <h2>الطلاب تحت إشرافك</h2>
+  <table>
     <thead>
       <tr>
+        <th>رقم الطالب</th>
         <th>اسم الطالب</th>
-        <th>رمز الطالب</th>
-        <th>البرنامج</th>
-        <th>وقت التسليم</th>
-        <th>الإجابة</th>
+        <th>الحالة</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- البيانات ستُعبأ من JavaScript -->
+    <tbody id="students-table">
+      <!-- سيتم تعبئته بالجافاسكربت -->
     </tbody>
   </table>
 
-  <div class="export-buttons">
-    <button onclick="exportToCSV()" class="export-btn">تصدير كـ CSV</button>
-    <button onclick="exportToTXT()" class="export-btn">تصدير كـ TXT</button>
-  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const teacherUsername = localStorage.getItem('username') || 'teacher1';
+      document.getElementById('teacherName').textContent += teacherUsername;
 
-  <script src="monitor.js"></script>
+      fetch(`get_students.php?teacher=${teacherUsername}`)
+        .then(response => response.json())
+        .then(data => {
+          const table = document.getElementById("students-table");
+          table.innerHTML = "";
+
+          data.forEach(student => {
+            const row = `<tr>
+              <td>${student.id}</td>
+              <td>${student.name}</td>
+              <td>${student.status}</td>
+            </tr>`;
+            table.innerHTML += row;
+          });
+        })
+        .catch(error => {
+          console.error('حدث خطأ في جلب بيانات الطلاب:', error);
+        });
+    });
+  </script>
+
 </body>
 </html>
