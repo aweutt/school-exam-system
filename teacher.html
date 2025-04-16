@@ -2,37 +2,47 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>لوحة المعلم | Lab Code</title>
+  <title>واجهة المعلم | Lab Code</title>
   <style>
     body {
       font-family: 'Tahoma', sans-serif;
-      background-color: #e8f0fe;
+      background-color: #f0f8ff;
       direction: rtl;
       padding: 30px;
     }
 
     .teacher-box {
-      background-color: #ffffff;
+      background: white;
       padding: 20px;
+      margin: auto;
       border-radius: 10px;
       max-width: 900px;
-      margin: auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
     h2 {
       color: #0b5394;
+      text-align: center;
+    }
+
+    .info {
       margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
     }
 
     label {
+      display: block;
+      margin-bottom: 6px;
       font-weight: bold;
     }
 
-    input {
-      padding: 10px;
-      margin: 10px 0;
+    input[type="text"] {
       width: 100%;
+      padding: 10px;
       border: 1px solid #ccc;
       border-radius: 6px;
     }
@@ -44,86 +54,118 @@
       padding: 10px 20px;
       border-radius: 6px;
       cursor: pointer;
+      margin-top: 10px;
     }
 
-    .student-list {
+    button:hover {
+      background-color: #063971;
+    }
+
+    .test-list {
       margin-top: 30px;
     }
 
-    .student-list ul {
-      padding: 0;
-      list-style: none;
-    }
-
-    .student-list li {
-      background-color: #f2f7ff;
+    .test-item {
+      background-color: #e0ecff;
       padding: 10px;
-      margin-bottom: 5px;
-      border-radius: 5px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .status {
+    .code-copy {
+      background-color: #d0e4ff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
       font-size: 14px;
-      margin-top: 5px;
-      color: #333;
-    }
-
-    .submitted {
-      color: green;
-      font-weight: bold;
-    }
-
-    .not-submitted {
-      color: red;
     }
   </style>
 </head>
 <body>
-
   <div class="teacher-box">
-    <h2>واجهة المعلم | Lab Code</h2>
+    <h2>مرحبًا بك في لوحة المعلم</h2>
 
-    <label for="examCode">رمز الاختبار:</label>
-    <input type="text" id="examCode" placeholder="أدخل رمز الاختبار">
+    <div class="info">
+      <p>المعلم: <strong id="teacherName"></strong></p>
+      <p>المرحلة: <strong id="teacherLevel"></strong></p>
+    </div>
 
-    <button onclick="loadStudents()">عرض الطلاب المتصلين</button>
+    <div class="form-group">
+      <label for="programName">اسم البرنامج:</label>
+      <input type="text" id="programName" placeholder="مثال: HTML أو Python">
+    </div>
 
-    <div class="student-list" id="studentListContainer">
-      <h3>الطلاب المتصلون:</h3>
-      <ul id="studentList"></ul>
+    <div class="form-group">
+      <label for="examCode">رمز الاختبار:</label>
+      <input type="text" id="examCode" placeholder="مثال: X12345">
+    </div>
+
+    <button onclick="addExam()">إضافة الاختبار</button>
+
+    <div class="test-list" id="testList">
+      <h3>الاختبارات المضافة:</h3>
+      <!-- الاختبارات تظهر هنا -->
     </div>
   </div>
 
   <script>
-    function loadStudents() {
-      const examCode = document.getElementById("examCode").value.trim();
-      if (!examCode) {
-        alert("يرجى إدخال رمز الاختبار.");
+    // عرض بيانات المعلم
+    document.getElementById("teacherName").textContent = localStorage.getItem("username");
+    document.getElementById("teacherLevel").textContent = localStorage.getItem("level");
+
+    // إضافة اختبار
+    function addExam() {
+      const program = document.getElementById("programName").value.trim();
+      const code = document.getElementById("examCode").value.trim();
+      if (!program || !code) {
+        alert("يرجى تعبئة جميع الحقول");
         return;
       }
 
-      function updateList() {
-        const studentsData = JSON.parse(localStorage.getItem(`students-${examCode}`)) || [];
-        const listElement = document.getElementById("studentList");
-        listElement.innerHTML = "";
+      const testList = document.getElementById("testList");
 
-        studentsData.forEach(student => {
-          const li = document.createElement("li");
-          li.innerHTML = `
-            <strong>${student.name}</strong>
-            <div class="status">الوقت: ${student.time}</div>
-            <div class="status ${student.submitted ? 'submitted' : 'not-submitted'}">
-              الحالة: ${student.submitted ? 'تم التسليم' : 'لم يتم التسليم'}
-            </div>
-          `;
-          listElement.appendChild(li);
-        });
-      }
+      const testItem = document.createElement("div");
+      testItem.className = "test-item";
+      testItem.innerHTML = `
+        <span><strong>${program}</strong> | الرمز: <strong>${code}</strong></span>
+        <button class="code-copy" onclick="copyToClipboard('${code}')">نسخ الرمز</button>
+      `;
+      testList.appendChild(testItem);
 
-      updateList();
-      setInterval(updateList, 3000);
+      // حفظ مؤقت في localStorage (ممكن ربطها بقاعدة بيانات لاحقًا)
+      let exams = JSON.parse(localStorage.getItem("teacherExams") || "[]");
+      exams.push({ program, code });
+      localStorage.setItem("teacherExams", JSON.stringify(exams));
+
+      // إعادة تعيين الحقول
+      document.getElementById("programName").value = "";
+      document.getElementById("examCode").value = "";
     }
-  </script>
 
+    function copyToClipboard(code) {
+      navigator.clipboard.writeText(code).then(() => {
+        alert("تم نسخ الرمز: " + code);
+      });
+    }
+
+    // استرجاع الاختبارات عند فتح الصفحة
+    window.onload = () => {
+      let exams = JSON.parse(localStorage.getItem("teacherExams") || "[]");
+      const testList = document.getElementById("testList");
+      exams.forEach(test => {
+        const testItem = document.createElement("div");
+        testItem.className = "test-item";
+        testItem.innerHTML = `
+          <span><strong>${test.program}</strong> | الرمز: <strong>${test.code}</strong></span>
+          <button class="code-copy" onclick="copyToClipboard('${test.code}')">نسخ الرمز</button>
+        `;
+        testList.appendChild(testItem);
+      });
+    };
+  </script>
 </body>
 </html>
