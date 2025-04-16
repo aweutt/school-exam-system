@@ -1,111 +1,86 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>لوحة إشراف المعلم | Lab Code</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>لوحة إشراف المعلم</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      direction: rtl;
-      background-color: #f5faff;
-      padding: 30px;
+      font-family: 'Tahoma', sans-serif;
+      background-color: #f0f4f8;
+      padding: 20px;
     }
 
     h1 {
       text-align: center;
-      color: #0b5394;
+      color: #2c3e50;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      background-color: #ffffff;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-top: 20px;
+      background-color: white;
     }
 
     th, td {
-      padding: 12px 15px;
+      border: 1px solid #ddd;
+      padding: 10px;
       text-align: center;
-      border-bottom: 1px solid #e0e0e0;
     }
 
     th {
-      background-color: #0b5394;
+      background-color: #3498db;
       color: white;
     }
 
-    tr:hover {
-      background-color: #f0f8ff;
-    }
-
-    .code-box {
-      font-family: monospace;
-      background-color: #f4f4f4;
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 6px;
-      white-space: pre-wrap;
-      text-align: left;
-    }
-
-    .refresh-time {
-      text-align: center;
-      margin-bottom: 10px;
+    .export-btn {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
       font-size: 14px;
-      color: #666;
+      transition: background-color 0.3s ease;
+    }
+
+    .export-btn:hover {
+      background-color: #2980b9;
+    }
+
+    .export-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>لوحة إشراف المعلم - المتابعة المباشرة</h1>
-  <div class="refresh-time" id="refreshTime">آخر تحديث: جاري التحميل...</div>
+  <h1>لوحة إشراف المعلم</h1>
 
-  <table>
+  <table id="students-table">
     <thead>
       <tr>
         <th>اسم الطالب</th>
+        <th>رمز الطالب</th>
         <th>البرنامج</th>
-        <th>رمز الاختبار</th>
         <th>وقت التسليم</th>
-        <th>كود الطالب</th>
+        <th>الإجابة</th>
       </tr>
     </thead>
-    <tbody id="studentsTableBody">
-      <!-- سيتم تعبئة بيانات الطلاب هنا -->
+    <tbody>
+      <!-- البيانات ستُعبأ من JavaScript -->
     </tbody>
   </table>
 
-  <script>
-    function updateTable() {
-      const submissions = JSON.parse(localStorage.getItem("studentsSubmissions")) || [];
-      const tableBody = document.getElementById("studentsTableBody");
-      const refreshTime = document.getElementById("refreshTime");
+  <div class="export-buttons">
+    <button onclick="exportToCSV()" class="export-btn">تصدير كـ CSV</button>
+    <button onclick="exportToTXT()" class="export-btn">تصدير كـ TXT</button>
+  </div>
 
-      tableBody.innerHTML = ""; // مسح القديم
-
-      submissions.forEach(student => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${student.name}</td>
-          <td>${student.program}</td>
-          <td>${student.code}</td>
-          <td>${student.time}</td>
-          <td><div class="code-box">${student.answer}</div></td>
-        `;
-        tableBody.appendChild(row);
-      });
-
-      const now = new Date();
-      refreshTime.textContent = `آخر تحديث: ${now.toLocaleTimeString()}`;
-    }
-
-    // تحديث أول مرة
-    updateTable();
-
-    // تحديث كل 60 ثانية تلقائيًا
-    setInterval(updateTable, 60000);
-  </script>
+  <script src="monitor.js"></script>
 </body>
 </html>
