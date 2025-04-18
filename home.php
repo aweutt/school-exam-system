@@ -126,22 +126,50 @@ if ($stage === "ابتدائي" && in_array($grade, ["رابع", "خامس", "س
     </div>
   </div>
 
-  <script>
-    function selectProgram(program) {
-      localStorage.setItem("selectedProgram", program);
-      const role = "<?= $role ?>";
-      const next = document.getElementById("nextLink");
+ <script>
+  function selectProgram(program) {
+    localStorage.setItem("selectedProgram", program);
+    const role = "<?= $role ?>";
+    const next = document.getElementById("nextLink");
 
-      if (role === "student") {
-        next.href = "exam.php";
-        next.textContent = "ابدأ الاختبار";
-      } else {
-        next.href = "teacher.php";
-        next.textContent = "اذهب للوحة المعلم";
-      }
+    // تحويل اسم البرنامج إلى ملف PHP
+    const programMap = {
+      "سكراتش": "scratch.php",
+      "تينكر كارد": "tinkercad.php",
+      "إكسل": "excel.php",
+      "فايل ميكر": "filemaker.php",
+      "مختبر": "lab.php",
+      "كودو": "kodu.php",
 
+      "وورد": "word.php",
+      "بوربوينت": "powerpoint.php",
+      "VEXcode VR": "vexcode.php",
+      "Shotcut": "shotcut.php",
+
+      "Visual Studio Code": "vscode.php",
+      "Gantt Project": "gantt.php",
+      "MIT App Inventor": "mit.php",
+      "GIMP": "gimp.php",
+      "Pencil2D": "pencil2d.php",
+      "Scribus": "scribus.php",
+      "Cisco": "cisco.php",
+      "Micro:bit": "microbit.php",
+      "Inkscape": "inkscape.php"
+    };
+
+    const file = programMap[program];
+
+    if (role === "student" && file) {
+      next.href = file;
+      next.textContent = "فتح البرنامج";
+      document.getElementById("nextAction").style.display = "block";
+    } else {
+      next.href = "teacher.php";
+      next.textContent = "اذهب للوحة المعلم";
       document.getElementById("nextAction").style.display = "block";
     }
-  </script>
+  }
+</script>
+
 </body>
 </html>
